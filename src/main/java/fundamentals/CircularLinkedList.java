@@ -1,8 +1,6 @@
 package fundamentals;
 
-import java.util.ConcurrentModificationException;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * Author Pierre Schaus
@@ -15,6 +13,8 @@ import java.util.NoSuchElementException;
  * the removal (remove method) is done at a particular index of the list.
  *
  * A (single) reference to the end of the list (last) is necessary to perform all operations on this queue.
+ * PERSONNAL NOTE: as I understand, there is no need to point the last node to the first node as we don't have
+ * any reference to the first node anyway. We only need to ensure...
  *
  * You are therefore asked to implement this circular simply linked list by completing the class see (TODO's)
  * Most important methods are:
@@ -27,87 +27,138 @@ import java.util.NoSuchElementException;
  */
 public class CircularLinkedList<Item> implements Iterable<Item> {
 
-    private long nOp = 0; // count the number of operations
-    private int n;          // size of the stack
-    private Node  last;   // trailer of the list
+  private long nOp = 0; // count the number of operations
+  private int n;          // size of the stack
+  private Node last;   // trailer of the list
 
-    // helper linked list class
-    private class Node {
-        private Item item;
-        private Node next;
+  // helper linked list class
+  private class Node {
+    private Item item;
+    private Node next;
+  }
+
+  public CircularLinkedList() {
+    n = 0;
+  }
+
+  public boolean isEmpty() {
+    return n == 0;
+  }
+
+  public int size() {
+    return n;
+  }
+
+  private long nOp() {
+    return nOp;
+  }
+
+  /**
+   * Append an item at the end of the list
+   * @param item the item to append
+   */
+  public void enqueue(Item item) {
+    // creating a new node
+    Node node = new Node();
+    node.item = item;
+
+    // if list is not empty (which induces that last is not null)
+    if (last != null) {
+      Node oldLast = last;
+      oldLast.next = node;
     }
 
-    public CircularLinkedList() {
-        // TODO initialize instance variables
+    // set the new node as the last element
+    last = node;
+
+    // increase size of the list
+    n++;
+    // increase the number of operations
+    nOp++;
+  }
+
+  /**
+   * Removes the element at the specified position in this list.
+   * Shifts any subsequent elements to the left (subtracts one from their indices).
+   * Returns the element that was removed from the list.
+   */
+  public Item remove(int index) throws IndexOutOfBoundsException {
+    if (index < 0 || index > (size() - 1)) {
+      throw new IndexOutOfBoundsException("This element does not exist.");
     }
 
-    public boolean isEmpty() {
-        // TODO
-         return false;
+    // NOTE: we should ensure the last node is connected to the first one
+    // we start with the last Node
+    Node currentNode = last;
+    int currentIndex = 0;
+
+    Node nodeToRemove = last;
+
+    while (currentIndex <= size() - 1) {
+      if (currentIndex == index) {
+        // remove the node
+        // currentNode.next is the element to remove as we started with "last"
+        // shift the subsequent elements to the left
+        nodeToRemove = currentNode.next;
+        currentNode.next = currentNode.next.next;
+        break;
+      }
+
+      currentNode = currentNode.next;
+      currentIndex++;
     }
 
-    public int size() {
-        // TODO
-         return -1;
+    // decrease the size of the list
+    n--;
+    // increase the number of operations
+    nOp++;
+
+    return nodeToRemove.item;
+  }
+
+
+  /**
+   * Returns an iterator that iterates through the items in FIFO order.
+   * @return an iterator that iterates through the items in FIFO order.
+   */
+  public Iterator<Item> iterator() {
+    return new ListIterator();
+  }
+
+  /**
+   * Implementation of an iterator that iterates through the items in FIFO order.
+   * The iterator should implement a fail-fast strategy, that is ConcurrentModificationException
+   * is thrown whenever the list is modified while iterating on it.
+   * This can be achieved by counting the number of operations (nOp) in the list and
+   * updating it everytime a method modifying the list is called.
+   * Whenever it gets the next value (i.e. using next() method), and if it finds that the
+   * nOp has been modified after this iterator has been created, it throws ConcurrentModificationException.
+   */
+  private class ListIterator implements Iterator<Item> {
+    private long currentnOp;
+    private int currentIndex = 0;
+
+    // TODO You probably need a constructor here and some instance variables
+    private ListIterator() {
+      // keep track of nOp when we start iterating
+      currentnOp = nOp();
     }
 
-    private long nOp() {
-        return nOp;
+    @Override
+    public boolean hasNext() {
+      return (currentIndex + 1) >= (size() - 1);
     }
 
+    @Override
+    public Item next() throws ConcurrentModificationException {
+      // fail-fast strategy
+      if (currentnOp != nOp()) {
+        // list has been modified as we iterate
+        throw new ConcurrentModificationException("Circular Linked List has been modified while iterating on it.");
+      }
 
-
-    /**
-     * Append an item at the end of the list
-     * @param item the item to append
-     */
-    public void enqueue(Item item) {
-        // TODO
-
+      currentIndex++;
     }
-
-    /**
-     * Removes the element at the specified position in this list.
-     * Shifts any subsequent elements to the left (subtracts one from their indices).
-     * Returns the element that was removed from the list.
-     */
-    public Item remove(int index) {
-        // BEGIN STUDENT return null;
-    }
-
-
-    /**
-     * Returns an iterator that iterates through the items in FIFO order.
-     * @return an iterator that iterates through the items in FIFO order.
-     */
-    public Iterator<Item> iterator() {
-        return new ListIterator();
-    }
-
-    /**
-     * Implementation of an iterator that iterates through the items in FIFO order.
-     * The iterator should implement a fail-fast strategy, that is ConcurrentModificationException
-     * is thrown whenever the list is modified while iterating on it.
-     * This can be achieved by counting the number of operations (nOp) in the list and
-     * updating it everytime a method modifying the list is called.
-     * Whenever it gets the next value (i.e. using next() method), and if it finds that the
-     * nOp has been modified after this iterator has been created, it throws ConcurrentModificationException.
-     */
-    private class ListIterator implements Iterator<Item> {
-
-        // TODO You probably need a constructor here and some instance variables
-
-
-        @Override
-        public boolean hasNext() {
-            // BEGIN STUDENT return false;
-        }
-
-        @Override
-        public Item next() {
-            // BEGIN STUDENT return null;
-        }
-
-    }
+  }
 
 }

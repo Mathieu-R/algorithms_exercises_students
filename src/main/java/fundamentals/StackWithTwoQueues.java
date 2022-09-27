@@ -2,6 +2,7 @@ package fundamentals;
 
 import java.util.ArrayDeque;
 import java.util.EmptyStackException;
+import java.util.LinkedList;
 import java.util.Queue;
 
 /**
@@ -12,46 +13,85 @@ import java.util.Queue;
  */
 public class StackWithTwoQueues<E> {
 
-    Queue<E> queue1;
-    Queue<E> queue2;
+  Queue<E> queue1;
+  Queue<E> queue2;
 
-    public StackWithTwoQueues() {
-        queue1 = new ArrayDeque();
-        queue2 = new ArrayDeque();
+  public StackWithTwoQueues() {
+    queue1 = new ArrayDeque<>();
+    queue2 = new ArrayDeque<>();
+  }
+
+  /**
+   * Looks at the object at the top of this stack
+   * without removing it from the stack
+   */
+  public boolean empty() {
+    return false;
+  }
+
+  /**
+   * Returns the first element of the stack, without removing it from the stack
+   *
+   * @throws EmptyStackException if the stack is empty
+   */
+  public E peek() throws EmptyStackException {
+    // throw an exception if queue1 is empty (which means the stack is empty)
+    if (queue1.size() == 0) {
+      throw new EmptyStackException();
     }
 
-    /**
-     * Looks at the object at the top of this stack
-     * without removing it from the stack
-     */
-    public boolean empty() {
-         return false;
+    // remove all elements of queue1 except the last one
+    // in FIFO order and push them in queue2
+    for (int i = 0; i < queue1.size() - 1; i++) {
+      queue2.offer(queue1.remove());
     }
 
-    /**
-     * Returns the first element of the stack, without removing it from the stack
-     *
-     * @throws EmptyStackException if the stack is empty
-     */
-    public E peek() throws EmptyStackException {
-         return null;
+    // check the last element added
+    E tail = queue1.peek();
+
+    // swap the queues
+    // not sure if it works because of reference
+    queue1 = queue2;
+    queue2 = new ArrayDeque<>();
+
+    return tail;
+  }
+
+  /**
+   * Remove the first element of the stack and returns it
+   *
+   * @throws EmptyStackException if the stack is empty
+   */
+  public E pop() throws EmptyStackException {
+    // throw an exception if queue1 is empty (which means the stack is empty)
+    if (queue1.size() == 0) {
+      throw new EmptyStackException();
     }
 
-    /**
-     * Remove the first element of the stack and returns it
-     *
-     * @throws EmptyStackException if the stack is empty
-     */
-    public E pop() throws EmptyStackException {
-         return null;
+    // remove all elements of queue1 except the last one
+    // in FIFO order and push them in queue2
+    for (int i = 0; i < queue1.size() - 1; i++) {
+      queue2.offer(queue1.remove());
     }
 
-    /**
-     * Adds an element to the stack
-     *
-     * @param item the item to add
-     */
-    public void push(E item) {
-    }
+    // remove the last element added
+    E tail = queue1.remove();
+
+    // swap the queues
+    // not sure if it works because of reference
+    queue1 = queue2;
+    queue2 = new ArrayDeque<>();
+
+    return tail;
+  }
+
+  /**
+   * Adds an element to the stack
+   *
+   * @param item the item to add
+   */
+  public void push(E item) {
+    queue1.offer(item);
+  }
 
 }

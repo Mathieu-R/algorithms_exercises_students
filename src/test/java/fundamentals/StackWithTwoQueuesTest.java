@@ -1,6 +1,7 @@
 package fundamentals;
 
 import org.hamcrest.core.IsEqual;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
