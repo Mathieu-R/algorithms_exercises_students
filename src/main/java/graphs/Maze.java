@@ -1,6 +1,9 @@
 package graphs;
 
 
+import java.util.Collections;
+import java.util.LinkedList;
+
 /**
  * We are interested in solving a maze represented by a matrix of integers 0-1 of size nxm.
  * This matrix is a two-dimensional array. An entry equal to '1' means that there is a wall and therefore this position is not accessible,
@@ -15,8 +18,8 @@ package graphs;
 public class Maze {
     public static Iterable<Integer> shortestPath(int[][] maze, int x1, int y1, int x2, int y2) {
         // TODO
-         return null;
-        if (maze[x1][y1] == 1 || maze[x2][y2] == 1) return new LinkedList<>();
+        return null;
+        /*if (maze[x1][y1] == 1 || maze[x2][y2] == 1) return new LinkedList<>();
 
         LinkedList<Integer> queue = new LinkedList<>();
 
@@ -67,7 +70,7 @@ public class Maze {
         }
         list.add(dest);
         Collections.reverse(list);
-        return list;
+        return list;*/
     }
 
     public static int ind(int x, int y, int lg) {

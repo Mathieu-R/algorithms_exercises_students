@@ -20,15 +20,15 @@ public class BinarySearchTreeIteratorTest {
 
     public static class TestNotParameterized {
         @Test
-        @Grade(value=1, cpuTimeout = 1000)
-        @GradeFeedback(message="Sorry, something is wrong with your algorithm. Debug first on this small example", onFail=true)
-        public void  testExample() {
+        @Grade(value = 1, cpuTimeout = 1000)
+        @GradeFeedback(message = "Sorry, something is wrong with your algorithm. Debug first on this small example", onFail = true)
+        public void testExample() {
             BinarySearchTreeIterator<Integer> tree = new BinarySearchTreeIterator<>();
-            int [] values = new int []{12, 8, 18, 3, 11, 14, 20, 9, 15};
+            int[] values = new int[]{12, 8, 18, 3, 11, 14, 20, 9, 15};
             for (int v : values) {
                 tree.put(v);
             }
-            Integer [] output = new Integer []{3, 8, 9, 11, 12, 14, 15, 18, 20};
+            Integer[] output = new Integer[]{3, 8, 9, 11, 12, 14, 15, 18, 20};
 
             Iterator<Integer> iter = tree.iterator();
             for (int i = 0; i < output.length; i++) {
@@ -37,6 +37,5 @@ public class BinarySearchTreeIteratorTest {
             }
             assertTrue(!iter.hasNext());
         }
-
     }
-
+}

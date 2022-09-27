@@ -158,6 +158,7 @@ public class CircularLinkedList<Item> implements Iterable<Item> {
       }
 
       currentIndex++;
+      return last.item;
     }
   }
 

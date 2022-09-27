@@ -9,8 +9,5 @@
         <module name="LINFO1121-0821_p1" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="LINFO1121-0821_p1" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

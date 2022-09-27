@@ -26,7 +26,7 @@ public class StackWithTwoQueues<E> {
    * without removing it from the stack
    */
   public boolean empty() {
-    return false;
+    return queue1.isEmpty();
   }
 
   /**
@@ -49,9 +49,7 @@ public class StackWithTwoQueues<E> {
     // check the last element added
     E tail = queue1.peek();
 
-    // swap the queues
-    // not sure if it works because of reference
-    queue1 = queue2;
+    // reset the queue
     queue2 = new ArrayDeque<>();
 
     return tail;
@@ -76,10 +74,12 @@ public class StackWithTwoQueues<E> {
 
     // remove the last element added
     E tail = queue1.remove();
+    System.out.println(tail);
 
     // swap the queues
     // not sure if it works because of reference
-    queue1 = queue2;
+    Queue<E> temp = queue2;
+    queue1 = temp;
     queue2 = new ArrayDeque<>();
 
     return tail;

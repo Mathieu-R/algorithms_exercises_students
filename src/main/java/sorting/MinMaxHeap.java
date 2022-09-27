@@ -57,6 +57,7 @@ public class MinMaxHeap<Key extends Comparable<Key>> {
      * Expected time complexity: O(1)
      */
     public Key min() {
+        return null;
     }
 
     /**
@@ -64,6 +65,7 @@ public class MinMaxHeap<Key extends Comparable<Key>> {
      * Expected time complexity: O(1)
      */
     public Key max() {
+        return null;
     }
 
     /**

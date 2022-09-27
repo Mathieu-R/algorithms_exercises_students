@@ -50,6 +50,7 @@ public class DigraphImplem implements Digraph {
      */
     public Digraph reverse() {
         // TODO
+        return null;
     }
 
 }
