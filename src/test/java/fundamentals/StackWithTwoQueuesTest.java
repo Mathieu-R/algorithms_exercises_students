@@ -131,7 +131,7 @@ public class StackWithTwoQueuesTest {
                 StackWithTwoQueues<Integer> a = new StackWithTwoQueues<Integer>();
                 Stack<Integer> b = new Stack<>();
                 int random;
-                for (int k = 0; k < 1000; k++) { // if tests take too much time to be executed, reduce the value of k
+                for (int k = 0; k < 10; k++) { // if tests take too much time to be executed, reduce the value of k
                     random = r.nextInt(1000000);
                     a.push(random);
                     b.push(random);

@@ -2,7 +2,6 @@ package fundamentals;
 
 
 import com.github.guillaumederval.javagrading.Grade;
-import com.github.guillaumederval.javagrading.GradeFeedback;
 import com.github.guillaumederval.javagrading.GradingRunnerWithParametersFactory;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
@@ -11,7 +10,6 @@ import org.junit.runners.Parameterized;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Supplier;
 
 import static org.junit.Assert.*;
 
@@ -49,7 +47,7 @@ public class CircularLinkedListTest {
             Random r = new Random();
             LinkedList tests = new LinkedList<>();
             for (int i = 0; i < 50; i++) {
-                CircularLinkedList<Integer> a = new CircularLinkedList<>();
+                CircularLinkedList<Integer> a = new CircularLinkedList<Integer>();
                 List<Integer> b = new LinkedList<>();
                 for (int k = 0; k < 100; k++) {
                     int v = r.nextInt();

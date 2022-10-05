@@ -42,14 +42,19 @@ public class StackWithTwoQueues<E> {
 
     // remove all elements of queue1 except the last one
     // in FIFO order and push them in queue2
-    for (int i = 0; i < queue1.size() - 1; i++) {
-      queue2.offer(queue1.remove());
+    int size = queue1.size();
+
+    for (int i = 0; i < size - 1; i++) {
+      queue2.add(queue1.remove());
     }
 
     // check the last element added
     E tail = queue1.peek();
+    // put it back in the queue2
+    queue2.add(tail);
 
     // reset the queue
+    queue1 = queue2;
     queue2 = new ArrayDeque<>();
 
     return tail;
@@ -68,13 +73,17 @@ public class StackWithTwoQueues<E> {
 
     // remove all elements of queue1 except the last one
     // in FIFO order and push them in queue2
-    for (int i = 0; i < queue1.size() - 1; i++) {
-      queue2.offer(queue1.remove());
+
+    // save size because size instance variable is rewritten
+    // with remove method
+    int size = queue1.size();
+
+    for (int i = 0; i < size - 1; i++) {
+      queue2.add(queue1.remove());
     }
 
     // remove the last element added
     E tail = queue1.remove();
-    System.out.println(tail);
 
     // swap the queues
     // not sure if it works because of reference
@@ -91,7 +100,6 @@ public class StackWithTwoQueues<E> {
    * @param item the item to add
    */
   public void push(E item) {
-    queue1.offer(item);
+    queue1.add(item);
   }
-
 }
