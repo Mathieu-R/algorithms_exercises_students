@@ -105,8 +105,80 @@ public class Median {
      * @param hi the highest index from which the median is computed
      */
     public static int median(Vector vec, int lo, int hi) {
-        // TODO
-         return -1;
+        if (lo >= hi) {
+            return -1;
+        }
+
+        // we use quick-sort algorithm to sort our array fast: Theta(n log(n))
+        int partitioningIndex = partition(vec, lo, hi);
+
+        // check if the partitioning element is at the middle of the vector
+        // if it is the case, we found the median because the partitioning element is
+        // at its final position in the vector.
+        // otherwise, we need to sort the left or right part of the vector.
+        int mid = vec.size() / 2;
+
+        if (partitioningIndex < mid) {
+            // sort right part
+            return median(vec, partitioningIndex, hi);
+
+        } else if (partitioningIndex > mid) {
+            // sort left part
+            return median(vec, lo, partitioningIndex);
+        } else {
+            // we found the median
+            return vec.get(partitioningIndex);
+        }
     }
 
+    /**
+     * partition a vector into two parts based on a partitioning item (see quick-sort algorithm)
+     * @param vec the vector
+     * @param lo the lowest index of the vector
+     * @param hi the highest index of the vector
+     * @return the position of the partitioning item
+     */
+    private static int partition(Vector vec, int lo, int hi) {
+        int i = lo + 1;
+        int j = hi;
+
+        // we arbitrarily choose the first element of vec as the partitioning item
+        int partitioningItem = vec.get(lo);
+
+        // swap elements until i and j cross
+        while (true) {
+            //
+            while (vec.get(i) < partitioningItem) {
+                // stop if we reach the end of the list
+                if (i == hi) {
+                    break;
+                }
+
+                i++;
+            }
+
+            while (vec.get(j) > partitioningItem) {
+                // stop if we reach the beginning of the list
+                if (j == lo) {
+                    break;
+                }
+
+                j--;
+            }
+
+            // if i cross j, stop the infinite loop
+            if (i >= j) {
+                break;
+            }
+
+            // swap the two elements
+            vec.swap(i, j);
+        }
+
+        // swap the partitioning item with the j-th element (i.e. where j pointer has stopped)
+        vec.swap(lo, j);
+
+        // return the position of the partitioning item
+        return j;
+    }
 }

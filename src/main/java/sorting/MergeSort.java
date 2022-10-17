@@ -45,11 +45,11 @@ public class MergeSort {
       return;
     }
 
-    int mid = (hi - lo) / 2;
+    int mid = (hi + lo) / 2;
 
     // recursive sort left and right part of the array
     sort(a, aux, lo, mid);
-    sort(a, aux, mid + 1, hi);
+    sort(a, aux,mid + 1, hi);
 
     // merge the two parts
     merge(a, aux, lo, mid, hi);

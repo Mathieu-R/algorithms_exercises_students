@@ -23,5 +23,6 @@ public class ClosestPair {
       */
     public static int[] closestPair(int [] a, int x) {
         // TODO STUDENT return null;
+        return null;
     }
 }
