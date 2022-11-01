@@ -34,9 +34,66 @@ public class BinarySearchTree {
      * @param value the value we want to ceil
      */
     public static Integer ceil(BSTNode<Integer> root, int value) {
-         return null;
+		if (root == null) {
+			return null;
+		}
+
+		// if value is equals the root key
+		// return the value
+		if (root.key.compareTo(value) == 0) {
+			return root.key;
+		}
+
+		// if value is greater than root key
+		if (root.key.compareTo(value) < 0) {
+			return ceil(root.right, value);
+		}
+
+		// if value is less than root key
+		// we are sandwiching the value
+		Integer t = ceil(root.left, value);
+		if (t != null) {
+			// exact match
+			return t;
+		} else {
+			// ceil value
+			return root.key;
+		}
     }
 
+	/**
+	 * Returns the floored value of `value` in the tree rooted at `root`
+	 *
+	 * @param root the root of the tree
+	 * @param value the value we want to floor
+	 */
+	public static Integer floor(BSTNode<Integer> root, int value) {
+		if (root == null) {
+			return null;
+		}
+
+		// if value is equals the root key
+		// return the value
+		if (root.key.compareTo(value) == 0) {
+			return root.key;
+		}
+
+		// if value is less than root key
+		if (root.key.compareTo(value) > 0) {
+			return floor(root.left, value);
+		}
+
+		// if value is greater than root key
+		// we are sandwiching the value
+		Integer t = floor(root.right, value);
+		if (t != null) {
+			// exact match
+			return t;
+		} else {
+			// floor value
+			return root.key;
+		}
+	}
 
     static class BSTNode<K extends Comparable<K>> {
 

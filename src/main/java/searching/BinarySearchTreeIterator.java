@@ -3,6 +3,7 @@ package searching;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Stack;
 
 /**
  * In this exercise, we are interested in implementing an iterator (BSTIterator) for a Binary Search Tree (BST).
@@ -22,7 +23,7 @@ import java.util.NoSuchElementException;
  * The iterator visits the nodes in this order: 3, 8, 9, 11, 12, 14, 15, 18, 20
  * We ask you to complete the BSTIterator class, which must implement the Iterator interface.
  *
- * The BSTNode are generic over their key (the integers in the example above) and implement the 
+ * The BSTNode are generic over their key (the integers in the example above) and implement the
  * BinaryNode and KeyNode interface available in the utils package.
  */
 public class BinarySearchTreeIterator<Key extends Comparable<Key>> implements Iterable<Key> {
@@ -86,15 +87,56 @@ public class BinarySearchTreeIterator<Key extends Comparable<Key>> implements It
 
     private class BSTIterator implements Iterator<Key> {
 
+		private int size;
+		private Stack<BSTNode<Key>> stack;
+
+		public BSTIterator() {
+			stack = new Stack<>();
+			BSTNode<Key> nodePtr = root;
+
+			// get to the left until reaching a leaf
+			while (nodePtr != null) {
+				stack.push(nodePtr);
+				nodePtr = nodePtr.getLeft();
+			}
+
+			// keep track of the Tree size
+			// to avoid iterate over a modified Tree
+			this.size = size();
+		}
+
         @Override
         public boolean hasNext() {
-            return false;
+            return !this.stack.isEmpty();
         }
 
         @Override
         public Key next() {
-            return null;
-        }
+			if (this.size != size()) {
+				throw new ConcurrentModificationException();
+			}
+
+			if (!this.hasNext()) {
+				throw new NoSuchElementException();
+			}
+
+			// bubble up to the parent
+			BSTNode<Key> nextNode = stack.pop();
+			Key key = nextNode.getKey();
+
+			// go to the right
+			if (nextNode.getRight() != null) {
+				nextNode = nextNode.getRight();
+
+				// then go to the left until reaching a leaf
+				while (nextNode != null) {
+					stack.push(nextNode);
+					nextNode = nextNode.getLeft();
+				}
+			}
+
+			return key;
+		}
     }
 
     class BSTNode<K extends Comparable<K>> {

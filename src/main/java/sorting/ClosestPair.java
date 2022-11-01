@@ -1,5 +1,7 @@
 package sorting;
 
+import java.util.Arrays;
+
 /**
  * Let a be an array of integers. In this exercise we are interested in finding
  * the two entries i and j such that a[i] + a[j] is the closest from a target x.
@@ -22,7 +24,26 @@ public class ClosestPair {
       * @param x the target value for the sum
       */
     public static int[] closestPair(int [] a, int x) {
-        // TODO STUDENT return null;
+		// O(n log(n))
+		Arrays.sort(a);
+
+		for (int v: a) {
+			int elementToFind = v - x;
+			int matching_element = binarySearchClosestElement(elementToFind, a, 0, a.length - 1);
+		}
+
         return null;
     }
+
+	public static int binarySearchClosestElement(int elementToFind, int [] arr, int lo, int hi) {
+		int mid = (lo + hi) / 2;
+
+		if (arr[mid] > elementToFind && lo != hi) {
+			return binarySearchClosestElement(elementToFind, arr, 0, mid);
+		} else if (arr[mid] < elementToFind && lo != hi) {
+			return binarySearchClosestElement(elementToFind, arr, mid + 1, hi);
+		} else {
+			return arr[mid];
+		}
+	}
 }
