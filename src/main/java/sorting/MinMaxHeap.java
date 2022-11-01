@@ -107,7 +107,7 @@ public class MinMaxHeap<Key extends Comparable<Key>> {
      * @param position The index in the `content` array for which the depth must be computed
      */
     private int getNodeDepth(int position) {
-        // There is no log2 function in java.lang.Math so we use this little 
+        // There is no log2 function in java.lang.Math so we use this little
         // formula to compute the log2 of K (which give, when rounded to its
         // integer value, the depth of the index)
         return (int) (log(position) / log(2));
