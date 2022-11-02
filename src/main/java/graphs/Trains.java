@@ -1,6 +1,10 @@
 package graphs;
 
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+
 /**
  * Considering a list containing the relations between train stations (a train leaves the station `from` at `startTime`
  * and arrives at station `to` at `endTime`) and the positions of those stations, a starting station and a starting time,
@@ -47,7 +51,7 @@ package graphs;
  */
 public class Trains {
 
-    /** 
+    /**
      * Considering given starting station and time, compute the earliest hour at which any accessible station can be reached.
      * @param relations a list of relations that connect a pair (station, time) (the key) (for example, Bxl-midi, 8:48 am)
      *                  with a list of trains that leave the station at this time, represented by a list of
@@ -59,31 +63,31 @@ public class Trains {
      *         The map must contain the starting station
      */
     public static Map<String, Integer> reachableEarliest(HashMap<StationTime, LinkedList<StationTime>> relations, StationTime startPoint) {
-         return null; 
+         return null;
     }
 
     public static class StationTime implements Comparable<StationTime> {
 
-        public final String station; 
-        public final int time;  
-    
+        public final String station;
+        public final int time;
+
         public StationTime(String station, int time) {
             this.station = station;
             this.time = time;
         }
-    
+
         @Override
         public int hashCode() {
             return station.hashCode() ^ Integer.hashCode(~time);
         }
-    
+
         @Override
         public boolean equals(Object obj) {
             if(obj instanceof StationTime)
                 return ((StationTime) obj).station.equals(station) && ((StationTime) obj).time == time;
             return false;
         }
-    
+
         @Override
         public int compareTo(StationTime o) {
             int out = time - o.time;

@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class PreorderToBST {
-    /* 
+    /*
     * We ask you to implement the reconstruction of a BST starting
     * from a sequence of keys corresponding to preorder traversal of the BST.
     *
@@ -17,8 +17,8 @@ public class PreorderToBST {
     *                  5 ------------------------ 14
     *                  |                          |
     *                  ------ 7           12 ------
-    *                                 
-    *                                     
+    *
+    *
     */
 
     protected Node root;
@@ -32,9 +32,16 @@ public class PreorderToBST {
     }
 
     private Node put(Node x, int key) {
-        if (x == null) return new Node(null, null, key);
-        if (key < x.key) x.left = put(x.left, key);
-        else if (key > x.key) x.right = put(x.right, key);
+        if (x == null) {
+			return new Node(null, null, key);
+		}
+
+        if (key < x.key) {
+			x.left = put(x.left, key);
+		} else if (key > x.key) {
+			x.right = put(x.right, key);
+		}
+
         x.size = size(x.left) + size(x.right) + 1;
         return x;
     }
@@ -51,13 +58,30 @@ public class PreorderToBST {
      */
     public PreorderToBST(int [] preOrderInput) {
         // no need to change it, but you can if you want
-        root = preorderRead(preOrderInput,0,Integer.MIN_VALUE,Integer.MAX_VALUE);
+        root = preorderRead(preOrderInput,0, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
     public Node preorderRead(int [] preOrderInput, int i, int min, int max) {
-        // !!!!!!! TODO !!!!!!!!
-         return new Node(null,null,preOrderInput[0]);
-        
+		// base case: no node to insert anymore => null link
+		if (i >= preOrderInput.length) {
+			return null;
+		}
+
+		int currentNodeKey = preOrderInput[i];
+
+		// base case: key is out of range => null link
+		if (currentNodeKey <= min || currentNodeKey >= max) {
+			return null;
+		}
+
+		int next_index = i + 1;
+		Node left = preorderRead(preOrderInput, next_index, min, currentNodeKey);
+
+		int leftRootSize = root.left == null ? 0 : root.left.size;
+		Node right = preorderRead(preOrderInput, leftRootSize + next_index, currentNodeKey, max);
+
+		Node root = new Node(left, right, currentNodeKey);
+		return root;
     }
 
     public int[] preorderWrite() {
@@ -92,26 +116,27 @@ public class PreorderToBST {
         public Node right;
         public int key;
         public int size;
-    
+
         public Node(Node left, Node right, int key) {
             this.left = left;
             this.right = right;
             this.key = key;
             this.size = (left == null ? 0 : left.size) + (right == null ? 0 : right.size) + 1;
         }
-    
+
         @Override
         public String toString() {
             return "new Node("+left+","+right+","+key+")";
         }
-    
+
         @Override
         public boolean equals(Object obj) {
             if (obj != null) {
                 Node other = ((Node) obj);
                 if (other.key == key && other.size == size) {
                     boolean leftEqual = left != null ? left.equals(other.left) : other.left == null;
-                    return leftEqual && (right != null ? right.equals(other.right) : other.right == null);
+					boolean rightEqual = right != null ? right.equals(other.right) : other.right == null;
+                    return leftEqual && rightEqual;
                 } else {
                     return false;
                 }
@@ -119,18 +144,18 @@ public class PreorderToBST {
                 return false;
             }
         }
-    
+
         public int [] preOrder() {
             ArrayList<Integer> acc = new ArrayList<>();
             preOrder(acc);
             return Arrays.stream(acc.toArray(new Integer[]{})).mapToInt(i -> i).toArray();
         }
-    
+
         private void preOrder(ArrayList<Integer> acc) {
             acc.add(key);
             if (left != null) left.preOrder(acc);
             if (right != null) right.preOrder(acc);
         }
-    
+
     }
 }

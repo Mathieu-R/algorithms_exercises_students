@@ -1,6 +1,8 @@
 package graphs;
 
 
+import java.util.List;
+
 /**
  * Sophie and Marc want to reduce the bubbles of contacts in the belgian population
  * to contain an evil virus (weird idea but nevertheless inspired by a true belgian story in 2020, don't ask ...).

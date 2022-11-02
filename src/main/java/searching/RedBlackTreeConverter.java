@@ -12,9 +12,9 @@ package searching;
  *                                        --------------------
  *                                        |                  |
  *                                     |3,7|              |12,15|
- *                                       |                  |  
+ *                                       |                  |
  *                                 ------------      ---------------
- *                                 |     |    |      |       |     | 
+ *                                 |     |    |      |       |     |
  *                              |1,_| |5,_| |8,_|  |11,_| |13,_| |17,_|
  *
  *
@@ -25,7 +25,7 @@ package searching;
  *                                       ----------------
  *                                       |              |
  *                                  3----7        12----15   (red links !)
- *                                  |    |        |     |    
+ *                                  |    |        |     |
  *                                ---- ----     ----  ----
  *                                |  | |  |     |  |  |  |
  *                                1  5    8    11 13     17
@@ -42,9 +42,55 @@ public class RedBlackTreeConverter {
      * @return a RBNode which is the root of the equivalent RedBlackTRee
      */
     public static<Key extends Comparable<Key>> RBNode<Key> convert(TwoThreeNode<Key> twoThreeNode) {
-         return null;
+		// base case: we arrive at null link
+		if (twoThreeNode == null) {
+			return null;
+		}
+
+		if (twoThreeNode.is2node()) {
+			RBNode<Key> leftChild = convert(twoThreeNode.leftChild);
+			RBNode<Key> rightChild = convert(twoThreeNode.centerChild);
+
+			RBNode<Key> currentNode = new RBNode<Key>(
+				twoThreeNode.leftKey,
+				twoThreeNode.leftValue,
+				Color.Black,
+				sizeEvenIfNull(leftChild) + sizeEvenIfNull(rightChild) + 1
+			);
+
+			currentNode.leftChild = leftChild;
+			currentNode.rightChild = rightChild;
+
+			return currentNode;
+		} else {
+			RBNode<Key> leftChild = convert(twoThreeNode.leftChild);
+			RBNode<Key> centerChild = convert(twoThreeNode.centerChild);
+			RBNode<Key> rightChild = convert(twoThreeNode.rightChild);
+
+			RBNode<Key> redNode = new RBNode<Key>(
+				twoThreeNode.leftKey,
+				twoThreeNode.leftValue,
+				Color.Red,
+				sizeEvenIfNull(leftChild) + sizeEvenIfNull(centerChild) + 1
+			);
+
+			redNode.leftChild = leftChild;
+			redNode.rightChild = centerChild;
+
+			RBNode<Key> blackNode = new RBNode<Key>(
+				twoThreeNode.rightKey,
+				twoThreeNode.rightValue,
+				Color.Black,
+				redNode.size + sizeEvenIfNull(rightChild) + 1
+			);
+
+			blackNode.leftChild = redNode;
+			blackNode.rightChild = rightChild;
+
+			return blackNode;
+		}
     }
-    
+
     public static enum Color {
         Red,
         Black
@@ -105,7 +151,7 @@ public class RedBlackTreeConverter {
             this.rightValue = rightValue;
         }
 
-        
+
         /**
          * Returns true if and only if the node is a 2-node. A 2-node only has two children
          * that are located at `leftChild` (key smaller than `leftKey`) and `centerChild` (key
