@@ -34,7 +34,8 @@ public class IncrementalHash {
         assert (Q > 0);
         this.Q = Q;
         this.M = M;
-        // Computes (R ^(M-1)) % Q using the Horner's method
+
+        // Computes (R^(M-1)) % Q using the Horner's method
         // This precomputed result is useful for implementing nextHash in O(1)
         RM = 1;
         for (int i = 1; i <= M - 1; i++) {
@@ -53,7 +54,7 @@ public class IncrementalHash {
      *
      * @param t the input array
      * @param previousHash = hash(t-1) that is the one on t[from-1,...from+M-2]
-     * @param from the index of the substring window, must be on the inteveral [1...t.length-M]
+     * @param from the index of the substring window, must be on the interval [1...t.length-M]
      * @return hash[t] = (t[from] * R^(M-1) + t[from+1] * R^(M-2) + ... + t[from+M-1]) % Q
      *
      */

@@ -103,51 +103,59 @@ public class BinarySearchTreeIterator<Key extends Comparable<Key>> implements It
 		private Stack<BSTNode<Key>> stack;
 
 		public BSTIterator() {
+			// initialize a stack
 			stack = new Stack<>();
-			BSTNode<Key> nodePtr = root;
 
-			// get to the left until reaching a leaf
-			while (nodePtr != null) {
-				stack.push(nodePtr);
-				nodePtr = nodePtr.getLeft();
-			}
+			// set current node to root
+			BSTNode<Key> currentNode = root;
+			goAllTheWayLeft(currentNode);
+
 
 			// keep track of the Tree size
 			// to avoid iterate over a modified Tree
 			this.size = size();
 		}
 
+		public void goAllTheWayLeft(BSTNode<Key> x) {
+			// get to the left until reaching a leaf
+			while (x != null) {
+				// push the current node to the stack
+				stack.push(x);
+				// go left
+				x = x.getLeft();
+			}
+		}
+
         @Override
         public boolean hasNext() {
+			if (this.size != size()) {
+				// Fail-Fast strategy
+				throw new ConcurrentModificationException();
+			}
+
             return !this.stack.isEmpty();
         }
 
         @Override
         public Key next() {
-			if (this.size != size()) {
-				throw new ConcurrentModificationException();
-			}
-
 			if (!this.hasNext()) {
 				throw new NoSuchElementException();
 			}
 
-			// bubble up to the parent
-			BSTNode<Key> nextNode = stack.pop();
-			Key key = nextNode.getKey();
+			// bubble up to the parent (or the right child)
+			BSTNode<Key> parentNode = stack.pop();
+			Key parentKey = parentNode.getKey();
 
-			// go to the right
-			if (nextNode.getRight() != null) {
-				nextNode = nextNode.getRight();
+			// go to the right (if there is a right child)
+			if (parentNode.getRight() != null) {
+				BSTNode<Key> nextNode = parentNode.getRight();
 
 				// then go to the left until reaching a leaf
-				while (nextNode != null) {
-					stack.push(nextNode);
-					nextNode = nextNode.getLeft();
-				}
+				goAllTheWayLeft(nextNode);
 			}
 
-			return key;
+			// return parent key (or the right child key)
+			return parentKey;
 		}
     }
 
@@ -226,4 +234,3 @@ public class BinarySearchTreeIterator<Key extends Comparable<Key>> implements It
         }
     }
 }
-

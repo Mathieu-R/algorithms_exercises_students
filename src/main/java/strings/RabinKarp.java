@@ -20,7 +20,6 @@ import java.util.Hashtable;
  */
 public class RabinKarp {
 
-
      private String[] pat; // pattern (only needed for Las Vegas)
 
      private long patHash; // pattern hash value
@@ -35,8 +34,8 @@ public class RabinKarp {
 
 
         this.pat = pat; // save pattern (only needed for Las Vegas)
-        this.M = pat.length;
-        Q = 4463;
+        this.M = pat.length; // pattern length
+        Q = 4463; // large prime number
         RM = 1;
 
         for (int i = 1; i <= M - 1; i++) // Compute R^(M-1) % Q for use
@@ -54,7 +53,6 @@ public class RabinKarp {
             h = (R * h + key.charAt(j)) % Q;
         return h;
     }
-
 
     public int search(String txt) { // Search for hash match in text.
         int N = txt.length();

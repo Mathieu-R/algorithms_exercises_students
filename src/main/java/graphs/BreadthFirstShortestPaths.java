@@ -1,5 +1,6 @@
 package graphs;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,8 @@ public class BreadthFirstShortestPaths {
     private boolean[] marked; // marked[v] = is there an s-v path
     private int[] distTo;     // distTo[v] = number of edges shortest s-v path
 
+	private ArrayDeque<Integer> queue;
+
     /**
      * Computes the shortest path between any
      * one of the sources and very other vertex
@@ -43,15 +46,46 @@ public class BreadthFirstShortestPaths {
     public BreadthFirstShortestPaths(Graph G, Iterable<Integer> sources) {
         marked = new boolean[G.V()];
         distTo = new int[G.V()];
+
+		queue = new ArrayDeque<>();
+
         for (int v = 0; v < G.V(); v++) {
             distTo[v] = INFINITY;
         }
+
         bfs(G, sources);
     }
 
     // Breadth-first search from multiple sources
     private void bfs(Graph G, Iterable<Integer> sources) {
-        // TODO
+        // to find shortest-path from multiple source vertices
+		// we run a BFS but enqueue all source vertices first
+		for (int s: sources) {
+			// enqueue to source
+			queue.add(s);
+			// mark source as visited
+			marked[s] = true;
+
+			// indicate distance
+			distTo[s] = 0;
+		}
+
+		while (!queue.isEmpty()) {
+			// dequeue the oldest vertex
+			int v = queue.pop();
+
+			// for each unmarked vertex adjacent to "v"
+			// enqueue them and mark them as visited
+			for (int w: G.adj(v)) {
+				if (!marked[w]) {
+					queue.add(w);
+					marked[w] = true;
+
+					// indicate distance
+					distTo[w] = distTo[v] + 1;
+				}
+			}
+		}
     }
 
     /**
@@ -61,8 +95,9 @@ public class BreadthFirstShortestPaths {
      * @return true if there is a path, and false otherwise
      */
     public boolean hasPathTo(int v) {
-        // TODO
-         return false;
+        // there is path between one of the sources "s" and a vertex "v"
+		// if this last one has been marked
+		return marked[v];
     }
 
     /**
@@ -73,8 +108,7 @@ public class BreadthFirstShortestPaths {
      * @return the number of edges in a shortest path
      */
     public int distTo(int v) {
-        // TODO
-         return -1;
+        return distTo[v];
     }
 
     static class Graph {

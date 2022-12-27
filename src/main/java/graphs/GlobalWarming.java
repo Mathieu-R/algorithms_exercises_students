@@ -13,7 +13,7 @@ package graphs;
  *      | 4 | 4 | 1 | 4 | 2 |
  *      | 1 | 4 | 2 | 3 | 6 |
  *      | 1 | 1 | 1 | 6 | 3 |
- * 
+ *
  * If we replace the submerged entries by _, it gives the following matrix
  *
  *      | _ | _ | _ | _ | _ |
@@ -22,8 +22,8 @@ package graphs;
  *      | _ | 4 | _ | _ | 6 |
  *      | _ | _ | _ | 6 | _ |
  *
- * The goal is to implmets two methods that can answer the following questions:
- *      1) Are to entries on the same island?
+ * The goal is to implements two methods that can answer the following questions:
+ *      1) Are two entries on the same island?
  *      2) How many island is there
  *
  * Two entries above the water level are connected if they are next to each other on
@@ -36,13 +36,14 @@ public class GlobalWarming {
 
 
     /**
-     * Constructor. The run time of this method is expected to be in 
+     * Constructor. The run time of this method is expected to be in
      * O(n x log(n)) with n the number of entry in the altitude matrix.
      *
      * @param altitude the matrix of altitude
      * @param waterLevel the water level under which the entries are submerged
      */
     public GlobalWarming(int [][] altitude, int waterLevel) {
+		//TODO
     }
 
     /**
@@ -51,7 +52,8 @@ public class GlobalWarming {
      * Expected time complexity O(1)
      */
     public int nbIslands() {
-         return 0;
+		//TODO
+		return 0;
     }
 
     /**
@@ -63,7 +65,8 @@ public class GlobalWarming {
      * @param p2 the second point to compare
      */
     public boolean onSameIsland(Point p1, Point p2) {
-         return false;
+		//TODO
+		return false;
     }
 
 

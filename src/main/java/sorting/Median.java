@@ -105,10 +105,6 @@ public class Median {
      * @param hi the highest index from which the median is computed
      */
     public static int median(Vector vec, int lo, int hi) {
-        if (lo >= hi) {
-            return -1;
-        }
-
         // we use quick-sort algorithm to sort our array fast: Theta(n log(n))
         int partitioningIndex = partition(vec, lo, hi);
 
@@ -116,15 +112,17 @@ public class Median {
         // if it is the case, we found the median because the partitioning element is
         // at its final position in the vector.
         // otherwise, we need to sort the left or right part of the vector.
+		// NOTE: we always want the mid of the whole vector (not of a slice of it)
+		// because we're looking for the median
         int mid = vec.size() / 2;
 
         if (partitioningIndex < mid) {
             // sort right part
-            return median(vec, partitioningIndex, hi);
+            return median(vec, partitioningIndex + 1, hi);
 
         } else if (partitioningIndex > mid) {
             // sort left part
-            return median(vec, lo, partitioningIndex);
+            return median(vec, lo, partitioningIndex - 1);
         } else {
             // we found the median
             return vec.get(partitioningIndex);

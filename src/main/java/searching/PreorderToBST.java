@@ -77,7 +77,7 @@ public class PreorderToBST {
 		int next_index = i + 1;
 		Node left = preorderRead(preOrderInput, next_index, min, currentNodeKey);
 
-		int leftRootSize = root.left == null ? 0 : root.left.size;
+		int leftRootSize = left == null ? 0 : left.size;
 		Node right = preorderRead(preOrderInput, leftRootSize + next_index, currentNodeKey, max);
 
 		Node root = new Node(left, right, currentNodeKey);

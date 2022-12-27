@@ -44,10 +44,23 @@ public class LinearProbingHashST<Key, Value> {
     }
 
     /**
-     * resizes the hash table to the given capacity by re-hashing all of the keys
+     * resizes the hash table to the given capacity by re-hashing all the keys
      */
     private void resize(int capacity) {
-        // TODO
+		LinearProbingHashST<Key, Value> lp = new LinearProbingHashST<>(capacity);
+
+		for (int i = 0; i < m; i++) {
+			if (keys[i] != null) {
+				Key key = keys[i];
+				Value val = vals[i];
+
+				lp.put(key, val);
+			}
+		}
+
+		lp.keys = keys;
+		lp.vals = vals;
+		lp.m = m;
     }
 
     /**
@@ -60,7 +73,29 @@ public class LinearProbingHashST<Key, Value> {
      * @throws IllegalArgumentException if {@code key} is {@code null}
      */
     public void put(Key key, Value val) {
-        // TODO
+		if (key == null) {
+			throw new IllegalArgumentException();
+		}
+
+		if (n > m/2) {
+			resize(2*m);
+		}
+
+		// hash the key and find the next available entry
+		for (int i = hash(key); keys[i] != null; i = (i + 1) % m) {
+			// if key already exists, update the value
+			if (keys[i].equals(key)) {
+				vals[i] = val;
+				return;
+			}
+
+			// if key does not exist, put the new key and associated value
+			keys[i] = key;
+			vals[i] = val;
+
+			// update counter of keys in table
+			n++;
+		}
     }
 
     /**
@@ -72,7 +107,20 @@ public class LinearProbingHashST<Key, Value> {
      * @throws IllegalArgumentException if {@code key} is {@code null}
      */
     public Value get(Key key) {
-        // TODO
+		if (key == null) {
+			throw new IllegalArgumentException();
+		}
+
+        // hash the key to find the corresponding index in range [0,m-1]
+		for (int i = hash(key); keys[i] != null; i = (i + 1) % m) {
+			// check if the key is the one we're looking for
+			// if any collision, go to the next entry
+			if (keys[i].equals(key)) {
+				return vals[i];
+			}
+		}
+
+		// key not found
          return null;
     }
 

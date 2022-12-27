@@ -29,18 +29,21 @@ import static java.lang.Math.log;
  */
 public class MinMaxHeap<Key extends Comparable<Key>> {
 
-    private Key[] content;
-    private int size;
+    private Key[] content; // priority queue (PQ)
+    private int size; // #elements in the PQ
 
     @SuppressWarnings("unchecked")
     public MinMaxHeap(int initialSize) {
-        this.content = (Key []) new Comparable[initialSize];
+        this.content = (Key []) new Comparable[initialSize]; // PQ as an array of Comparable Keys
         this.size = 0;
     }
 
     @SuppressWarnings("unchecked")
     private void increaseSize() {
+		// create new array with double size
         Key [] newContent = (Key []) new Comparable[this.content.length*2];
+
+		// copy content of old array into new array
         System.arraycopy(this.content, 0, newContent, 0, this.content.length);
         this.content = newContent;
     }
@@ -119,6 +122,7 @@ public class MinMaxHeap<Key extends Comparable<Key>> {
      * @param position The position of the node to swim in the `content` array
      */
     public void swim(int position) {
+		return;
     }
 
     /**

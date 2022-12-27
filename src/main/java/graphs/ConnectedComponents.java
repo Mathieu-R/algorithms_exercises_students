@@ -21,14 +21,45 @@ import java.util.List;
  */
 public class ConnectedComponents {
 
+	private static boolean[] marked;
+	// for each "index i", indicate to which component "index i" vertex belongs to
+	private static int[] id;
+	// keep track of the number of connected components
+	private static int count;
 
     /**
      * @return the number of connected components in g
      */
     public static int numberOfConnectedComponents(Graph g) {
-        // TODO
-         return -1;
-    }
+		// initialize all vertices "v" as unmarked
+		marked = new boolean[g.V()];
+		id = new int[g.V()];
+		count = 0;
+
+		// for each unmarked vertex "v"
+		// run DFS to identify all vertices that are part of the same component
+		for (int v = 0; v < g.V(); v++) {
+			if (!marked[v]) {
+				dfs(g, v);
+				count++;
+			}
+		}
+
+		return count;
+	}
+
+	public static void dfs(Graph g, int v) {
+		marked[v] = true;
+
+		for (int w: g.adj(v)) {
+			if (!marked[w]) {
+				dfs(g, w);
+				// note: no need to keep track of path Tree
+				// to look for connected components
+			}
+		}
+	}
+
 
     static class Graph {
 

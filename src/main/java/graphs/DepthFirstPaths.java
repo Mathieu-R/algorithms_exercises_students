@@ -2,6 +2,7 @@ package graphs;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Consider this class, DepthFirstPaths, which computes the paths to any connected node
@@ -49,7 +50,17 @@ public class DepthFirstPaths {
 
     // Depth first search from v
     private void dfs(Graph G, int v) {
-        // TODO
+		// mark the vertex v
+		marked[v] = true;
+		// visit all adjacent vertices
+		for (int w: G.adj(v)) {
+			// if vertex w has not been visited
+			// dfs recursively + keep Tree of paths (for path exploration: pathTo method)
+			if (!marked[w]) {
+				dfs(G, w);
+				edgeTo[w] = v;
+			}
+		}
     }
 
     /**
@@ -59,8 +70,8 @@ public class DepthFirstPaths {
      * @return true if there is a path, false otherwise
      */
     public boolean hasPathTo(int v) {
-        // TODO
-         return false;
+        // if vertex v is not marked, there is no path from s to v
+		return marked[v];
     }
 
     /**
@@ -72,8 +83,21 @@ public class DepthFirstPaths {
      * s and vertex v, as an Iterable
      */
     public Iterable<Integer> pathTo(int v) {
-        // TODO
-         return null;
+		// if there is no path to v (from s)
+		// bail.
+		if (!hasPathTo(v)) {
+			return null;
+		}
+
+		// create a stack of path
+		// and bubble up from destination v to the source s
+		Stack<Integer> path = new Stack<>();
+		for (int x = v; x != s; x = edgeTo[v]) {
+			path.push(x);
+		}
+		path.push(s);
+
+		return path;
     }
 
     static class Graph {
