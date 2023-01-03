@@ -1,8 +1,7 @@
 package graphs;
 
-
-import java.util.Collections;
 import java.util.LinkedList;
+import java.util.Stack;
 
 /**
  * We are interested in solving a maze represented by a matrix of integers 0-1 of size nxm.
@@ -16,63 +15,105 @@ import java.util.LinkedList;
  * The same applies if there is no path between the origin and the destination.
  */
 public class Maze {
+	static final int[][] ALLOWED_MOVES = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+
     public static Iterable<Integer> shortestPath(int[][] maze, int x1, int y1, int x2, int y2) {
-        // TODO
-        return null;
-        /*if (maze[x1][y1] == 1 || maze[x2][y2] == 1) return new LinkedList<>();
+        // base case: if starting or ending position is a wall => return empty path
+		if (maze[x1][y1] == 1 || maze[x2][y2] == 1) {
+			return new LinkedList<Integer>();
+		}
 
-        LinkedList<Integer> queue = new LinkedList<>();
+		// create a "queue" (a LL in fact but will act as a Queue) for the BFS
+		// easier to generate the path tree
+		LinkedList<Integer> queue = new LinkedList<>();
 
-        int lgy = maze[0].length;
-        int lgx = maze.length;
+		// rows
+		int n = maze.length;
+		// columns
+		int m = maze[0].length;
 
-        int[] edgeTo = new int[lgx * lgy];
-        boolean[] marked = new boolean[lgx * lgy];
+		// keep track of visited vertices
+		boolean[] marked = new boolean[n * m];
 
-        marked[ind(x1, y1, lgy)] = true;
-        queue.add(ind(x1, y1, lgy));
+		// last vertex on the path to a given vertex
+		// useful to generate the path tree
+		int[] edgeTo = new int[n * m];
 
-        final int[][] pos = new int[][]{{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
+		// mark the start
+		marked[ind(x1, y1, m)] = true;
+		// add the starting index to the queue
+		queue.add(ind(x1, y1, m));
 
-        while (!queue.isEmpty()) {
-            int current = queue.remove();
-            int currX = row(current, lgy);
-            int currY = col(current, lgy);
+		// let's run a BFS to explore the maze
+		boolean found = false;
 
-            if (currX == x2 && currY == y2) {
-                break;
-            }
+		while(!queue.isEmpty()) {
+			// early stop: destination found
+			if (found) {
+				break;
+			}
 
-            for (int i = 0; i < 4; i++) {
-                int x = pos[i][0];
-                int y = pos[i][1];
-                int neiX = currX + x;
-                int neiY = currY + y;
-                if ((0 <= neiX && neiX < lgx) && (0 <= neiY && neiY < lgy) && (maze[neiX][neiY] != 1)) {
-                    int index = ind(neiX, neiY, lgy);
-                    if (!marked[index]) {
-                        marked[index] = true;
-                        queue.add(index);
-                        edgeTo[index] = current;
-                    }
-                }
-            }
-        }
+			// dequeue the first element index (i.e. current cell)
+			int cellIndex = queue.remove();
+			// get its coordinate
+			int cellX = row(cellIndex, m);
+			int cellY = col(cellIndex, m);
 
-        int source = ind(x1, y1, lgy);
-        int dest = ind(x2, y2, lgy);
+			// check each adjacent vertex (4 possibilities max)
+			for (int i = 0; i < 4; i++) {
+				int moveX = ALLOWED_MOVES[i][0];
+				int moveY = ALLOWED_MOVES[i][1];
 
-        LinkedList<Integer> list = new LinkedList<>();
-        if (!marked[dest]) return list;
-        while (dest != source) {
-            list.add(dest);
-            dest = edgeTo[dest];
-        }
-        list.add(dest);
-        Collections.reverse(list);
-        return list;*/
+				int nextCellX = cellX + moveX;
+				int nextCellY = cellY + moveY;
+
+				// base case: check that we're not going out of the maze neither hitting a wall
+				if ((nextCellX >= 0 && nextCellX < n) && (nextCellY >= 0 && nextCellY < m)
+					&& maze[nextCellX][nextCellY] != 1) {
+					int nextCellIndex = ind(nextCellX, nextCellY, m);
+
+					// if vertex has not been visited before
+					if (!marked[nextCellIndex]) {
+						// mark it
+						marked[nextCellIndex] = true;
+						// add it to the queue
+						queue.add(nextCellIndex);
+
+						// keep Tree of path
+						edgeTo[nextCellIndex] = cellIndex;
+
+						// check if we reached to destination
+						if (nextCellX == x2 && nextCellY == y2) {
+							found = true;
+						}
+					}
+				}
+			}
+		}
+
+		// need now to return the path
+		int startIndex = ind(x1, y1, m);
+		int destIndex = ind(x2, y2, m);
+
+		// if destination has not been found => return empty path
+		if (!found) {
+			return new LinkedList<Integer>();
+		}
+
+		Stack<Integer> path = new Stack<>();
+		// add to the path stack from dest to start
+		while(destIndex != startIndex) {
+			path.push(destIndex);
+			destIndex = edgeTo[destIndex];
+		}
+
+		// add the starting point
+		path.push(destIndex);
+
+		return path;
     }
 
+	// some helpers are given to us
     public static int ind(int x, int y, int lg) {
         return x * lg + y;
     }
@@ -84,5 +125,4 @@ public class Maze {
     public static int col(int pos, int mCols) {
         return pos % mCols;
     }
-
 }

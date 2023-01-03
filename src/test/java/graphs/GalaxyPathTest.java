@@ -40,7 +40,7 @@ public class GalaxyPathTest {
 
             // The path 0->2->4 is not possible because when it arrives at 2,
             // the current time is 1 (duration for travelling through a by-pass) and the by-pass 2->4 is closed.
-            // Therefore the only feasible path to reach the destination is 0 -> 1 -> 3 -> 4 (length of 3 expected)
+            // Therefore, the only feasible path to reach the destination is 0 -> 1 -> 3 -> 4 (length of 3 expected)
             int len = GalaxyPath.findPath(matrix, 0, dest);
             assertEquals(3, len);
 

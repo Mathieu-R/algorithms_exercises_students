@@ -20,7 +20,6 @@ import java.util.List;
  *
  */
 public class ConnectedComponents {
-
 	private static boolean[] marked;
 	// for each "index i", indicate to which component "index i" vertex belongs to
 	private static int[] id;
@@ -31,13 +30,15 @@ public class ConnectedComponents {
      * @return the number of connected components in g
      */
     public static int numberOfConnectedComponents(Graph g) {
-		// initialize all vertices "v" as unmarked
+		// keep track of visited nodes
 		marked = new boolean[g.V()];
+		// keep track of delegate for each component
 		id = new int[g.V()];
+		// number of components
 		count = 0;
 
-		// for each unmarked vertex "v"
-		// run DFS to identify all vertices that are part of the same component
+		// run a DFS through every node to identify all the components
+		// a non visited node correspond to a new component
 		for (int v = 0; v < g.V(); v++) {
 			if (!marked[v]) {
 				dfs(g, v);
@@ -49,8 +50,14 @@ public class ConnectedComponents {
 	}
 
 	public static void dfs(Graph g, int v) {
+		// mark node as visited
 		marked[v] = true;
 
+		// use the current number of component as the delegate
+		// for the nodes that are part of the same component
+		id[v] = count;
+
+		// lookup every adjacent node (part of the component)
 		for (int w: g.adj(v)) {
 			if (!marked[w]) {
 				dfs(g, w);

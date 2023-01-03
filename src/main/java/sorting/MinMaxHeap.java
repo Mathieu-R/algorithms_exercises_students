@@ -60,7 +60,13 @@ public class MinMaxHeap<Key extends Comparable<Key>> {
      * Expected time complexity: O(1)
      */
     public Key min() {
-        return null;
+		if (isEmpty()) {
+			return null;
+		}
+
+		// depth 0 is even, so it is a min layer
+		// note: min/max is at index 1 (nothing at index 0)
+		return content[1];
     }
 
     /**
@@ -68,7 +74,27 @@ public class MinMaxHeap<Key extends Comparable<Key>> {
      * Expected time complexity: O(1)
      */
     public Key max() {
-        return null;
+		// max is at depth 1
+
+		// if only min in the binary heap or binary heap is empty
+		// then max is the min (could be null if empty)
+		if (this.size() <= 1) {
+			return min();
+		}
+
+		// if 3 elements, cannot compare so min is the third one
+		if (this.size() == 2) {
+			return content[2];
+		}
+
+		Key maxCandidate1 = content[2];
+		Key maxCandidate2 = content[3];
+
+		if (higherThan(maxCandidate1, maxCandidate2)) {
+			return maxCandidate1;
+		}
+
+		return maxCandidate2;
     }
 
     /**
@@ -122,7 +148,49 @@ public class MinMaxHeap<Key extends Comparable<Key>> {
      * @param position The position of the node to swim in the `content` array
      */
     public void swim(int position) {
-		return;
+		// base case: we have reached the root
+		if (position == 1) {
+			return;
+		}
+
+		Key grandParent = content[position / 4];
+		Key parent = content[position / 2];
+
+		Key current = content[position];
+
+		boolean hasGrandParent = position / 4 != 0 && position / 4 != position / 2;
+
+
+		// get the depth of the Tree
+		int depth = getNodeDepth(position);
+
+		// if we are on even depth (min layer),
+		// parent is on a max layer => we swap position if parent's Key is lower than current's Key
+		// grandparent (if exists) is on min layer => we swap position if grandparent's Key is greater than current's Key
+		if (depth % 2 == 0) {
+			if (lessThan(parent, current)) {
+				swap(position, position / 2);
+				position = position / 2;
+				swim(position);
+			} else if (hasGrandParent && higherThan(grandParent, current)) {
+				swap(position, position / 4);
+				position = position / 4;
+				swim(position);
+			}
+		} else {
+			// if we are on odd depth (max layer),
+			// parent is on a min layer => we swap position if parent's Key is higher than current's Key
+			// grandparent (if exists) is on max layer => we swap position if grandparent's Key is lower than current's Key
+			if (higherThan(parent, current)) {
+				swap(position, position / 2);
+				position = position / 2;
+				swim(position);
+			} else if (hasGrandParent && lessThan(grandParent, current)) {
+				swap(position, position / 4);
+				position = position / 4;
+				swim(position);
+			}
+		}
     }
 
     /**
@@ -135,7 +203,14 @@ public class MinMaxHeap<Key extends Comparable<Key>> {
         if (this.size >= this.content.length) {
             this.increaseSize();
         }
+
+		// insert the new node at the end
         this.content[this.size] = k;
+		// swim it up
         this.swim(this.size);
     }
+
+	public boolean isEmpty() {
+		return size() == 0;
+	}
 }

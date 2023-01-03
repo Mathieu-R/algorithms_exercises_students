@@ -33,7 +33,21 @@ package graphs;
  * Carefully read the expected time complexity of the different methods.
  */
 public class GlobalWarming {
+	// matrix
+	private int[][] altitude;
 
+	// dimension of matrix
+	private int n;
+
+	// number of islands
+	private int nbIslands ;
+
+	private int waterLevel;
+
+	// keep track of components
+	private int[] components;
+
+	public final int[][] ALLOWED_MOVES = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
     /**
      * Constructor. The run time of this method is expected to be in
@@ -43,8 +57,73 @@ public class GlobalWarming {
      * @param waterLevel the water level under which the entries are submerged
      */
     public GlobalWarming(int [][] altitude, int waterLevel) {
-		//TODO
+		this.altitude = altitude;
+		this.n = altitude.length;
+
+		this.nbIslands = 0;
+		this.waterLevel = waterLevel;
+
+		this.components = new int[n * n];
+
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				// at the beginning, set every area to "flooded"
+				// area flooded have their root set to -1 (means "no part of a component")
+				this.components[ind(i, j, n)] = -1;
+			}
+		}
+
+		// explore the matrix with dfs
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				dfs(i, j);
+
+				// update the number of islands.
+				// if the area has its delegate set to "#number of islands",
+				// it means it is part of an island that has been discovered in the dfs call
+				// (remember every area have their delegate set to -1 at the beginning).
+				// therefore, we need to update the counter.
+				// note: cannot do that in dfs since it looks for adjacent area
+				// and therefore detect a whole island.
+				if (this.components[ind(i, j, n)] == this.nbIslands) {
+					this.nbIslands += 1;
+				}
+			}
+		}
     }
+
+	/* 	detect and explore a (possible) island
+		and set each explored and non-flooded area to its delegate island
+	*/
+	public void dfs(int i, int j) {
+		// base case: outside the matrix
+		if (i < 0 || i >= n || j < 0 || j >= n) {
+			return;
+		}
+
+		// base case: area already visited
+		// note: same idea as "marked[]" array
+		if (this.components[ind(i, j, n)] != -1) {
+			return;
+		}
+
+		// base case: area is flooded
+		if (altitude[i][j] <= waterLevel) {
+			return;
+		}
+
+		// we are on an island
+		// note: we use the number of currently detected islands as the root (aka delegate)
+		this.components[ind(i, j, n)] = this.nbIslands;
+
+		// visits adjacent areas
+		for (int[] move: ALLOWED_MOVES) {
+			int x = move[0];
+			int y = move[1];
+
+			dfs(i + x, j + y);
+		}
+	}
 
     /**
      * Returns the number of island
@@ -52,8 +131,7 @@ public class GlobalWarming {
      * Expected time complexity O(1)
      */
     public int nbIslands() {
-		//TODO
-		return 0;
+		return this.nbIslands;
     }
 
     /**
@@ -65,9 +143,17 @@ public class GlobalWarming {
      * @param p2 the second point to compare
      */
     public boolean onSameIsland(Point p1, Point p2) {
-		//TODO
-		return false;
+		return (
+			this.components[ind(p1.getX(), p1.getY(), n)] == this.components[ind(p2.getX(), p2.getY(), n)]
+				&& this.components[ind(p1.getX(), p1.getY(), n)] != -1
+				&& this.components[ind(p2.getX(), p2.getY(), n)] != -1
+		);
     }
+
+	// return the position in the matrix as an index for a flatted array
+	public int ind(int i, int j, int n) {
+		return (i * n) + j;
+	}
 
 
     /**

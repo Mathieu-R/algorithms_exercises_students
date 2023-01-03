@@ -1,7 +1,6 @@
 package strings;
 
-
-
+import java.util.PriorityQueue;
 
 /**
  * This class is used to construct a Huffman trie from frequencies of letters (in unicode or ASCII).
@@ -29,18 +28,41 @@ public class Huffman {
 
     /**
      * Constructs an Huffman trie for the frequencies of the characters given in arguments.
-     * The character are implicitely defined by the `freq` array (ranging from 0 to freq.length -1)
+     * The character are implicitly defined by the `freq` array (ranging from 0 to freq.length -1)
      *
      * @param freq the frequencies of the characters
      */
     public static HuffmanNode buildTrie(int [] freq) {
-         return null;
+		// insert each character node in a (min) priority queue based on the frequency
+		// they appear in the string we want to compress
+		PriorityQueue<HuffmanNode> pq = new PriorityQueue<>();
+
+		// characters are implicitly defined by the freq array (0,...n-1)
+		for (int i = 0; i < freq.length; i++) {
+			// if char appear in the string
+			HuffmanNode node = new HuffmanNode(i, freq[i], null, null);
+			pq.add(node);
+		}
+
+		// repeat while pq has more than one element
+		while(pq.size() > 1) {
+			HuffmanNode left = pq.poll();
+			HuffmanNode right = pq.poll();
+
+			HuffmanNode parent = new HuffmanNode(-1, left.getFrequency() + right.getFrequency(), left, right);
+			pq.add(parent);
+		}
+
+		// return the root
+		return pq.poll();
     }
 }
 
 class HuffmanNode implements Comparable<HuffmanNode> {
 
+	// character
     private final int ch;
+	// number of times the character appear in the string
     private final int freq;
     private HuffmanNode left;
     private HuffmanNode right;

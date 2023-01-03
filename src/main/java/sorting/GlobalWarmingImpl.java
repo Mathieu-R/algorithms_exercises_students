@@ -22,7 +22,7 @@ import java.util.Arrays;
  *  (4), 2 , 2 ,(4),(5)
  *  (4),(4), 1 ,(4), 2
  *   1 ,(4), 2 , 3 ,(6)
- *   1 , 1 , 1 ,(6), 3}
+ *   1 , 1 , 1 ,(6), 3
  *
  * The method you need to implement is nbSafePoints
  * - calculating the number of safe points for a given water level
@@ -59,10 +59,15 @@ abstract class GlobalWarming {
 
 public class GlobalWarmingImpl extends GlobalWarming {
 
+	// dimension of the altitude map (p x p)
+	private int p;
+	private int[] positionsIndex;
 
     public GlobalWarmingImpl(int[][] altitude) {
         super(altitude);
-        // TODO
+
+		p = altitude.length;
+		positionsIndex = new int[p * p];
         // expected pre-processing time in the constructror : O(n^2 log(n^2))
 
     }
