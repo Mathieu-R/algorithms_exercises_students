@@ -27,23 +27,36 @@ public class ClosestPair {
 		// O(n log(n))
 		Arrays.sort(a);
 
-		for (int v: a) {
-			int elementToFind = v - x;
-			int matching_element = binarySearchClosestElement(elementToFind, a, 0, a.length - 1);
+		int lo = 0;
+		int hi = a.length - 1;
+
+		int[] pair = new int[]{a[lo], a[hi]};
+
+		while (lo < hi) {
+			// current candidate
+			int sum = a[lo] + a[hi];
+
+			if (sum < x) {
+				// increase the low number index (next candidate will be greater)
+				lo += 1;
+			} else if (sum > x) {
+				// decrease the high number index (next candidate will be lower)
+				hi -= 1;
+			} else {
+				// if perfect match, update the pair return value and exit the loop
+				pair[0] = a[lo];
+				pair[1] = a[hi];
+				break;
+			}
+
+			// if the next candidate is closer to x than the current candidate
+			if (Math.abs(x - (a[lo] + a[hi])) < Math.abs(x - sum)) {
+				// update the pair return value
+				pair[0] = a[lo];
+				pair[1] = a[hi];
+			}
 		}
 
-        return null;
+		return pair;
     }
-
-	public static int binarySearchClosestElement(int elementToFind, int [] arr, int lo, int hi) {
-		int mid = (lo + hi) / 2;
-
-		if (arr[mid] > elementToFind && lo != hi) {
-			return binarySearchClosestElement(elementToFind, arr, 0, mid);
-		} else if (arr[mid] < elementToFind && lo != hi) {
-			return binarySearchClosestElement(elementToFind, arr, mid + 1, hi);
-		} else {
-			return arr[mid];
-		}
-	}
 }

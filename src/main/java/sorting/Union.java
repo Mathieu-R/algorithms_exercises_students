@@ -94,7 +94,7 @@ public class Union {
 		Interval interval = new Interval(min, max);
 		outIntervals.add(interval);
 
-        return outIntervals.toArray(new Interval[outIntervals.size()]);
+        return outIntervals.toArray(new Interval[0]);
     }
 
 }
