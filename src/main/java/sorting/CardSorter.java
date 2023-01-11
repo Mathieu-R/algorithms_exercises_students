@@ -31,11 +31,10 @@ public class CardSorter {
             // they are in the increasing order.
             for (int k = 1; k < list.getSize() - 1 - iter; k++) {
 				if (list.getFirst() > list.getSecond()) {
-					list.pop();
-				} else {
 					list.swap();
-					list.pop();
 				}
+
+				list.pop();
 			}
 
 			for (int k = 1; k < iter; k++) {

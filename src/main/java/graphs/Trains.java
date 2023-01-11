@@ -1,9 +1,7 @@
 package graphs;
 
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Considering a list containing the relations between train stations (a train leaves the station `from` at `startTime`
@@ -13,7 +11,7 @@ import java.util.Map;
  * You don't have to consider several points :
  * - passengers can leave a station at the exact moment where they reach this station
  * - all liaisons are direct
- * - timetable are not periodic, you don't have to repeat them evryday
+ * - timetable are not periodic, you don't have to repeat them every day
  * - startTime < endTime and from != to are always true in all relations
  * - there is no duplicate entry (i.e. strictly equal relations)
  * <p>
@@ -47,7 +45,7 @@ import java.util.Map;
  * <p>
  * Don't forget that if I reach Bxl-midi at time i, I can take any train that leaves Bxl-midi at time j >= i.
  * <p>
- * By the way, do you know the function TreeMap.subMap (https://docs.oracle.com/javase/8/docs/api/java/util/TreeMap.html#subMap-K-boolean-K-boolean-) ?
+ * By the way, do you know the function TreeMap.subMap (<a href="https://docs.oracle.com/javase/8/docs/api/java/util/TreeMap.html#subMap-K-boolean-K-boolean-">...</a>) ?
  */
 public class Trains {
 
@@ -63,7 +61,46 @@ public class Trains {
      *         The map must contain the starting station
      */
     public static Map<String, Integer> reachableEarliest(HashMap<StationTime, LinkedList<StationTime>> relations, StationTime startPoint) {
-         return null;
+		// create a PQ for Dijkstra where nodes (i.e. StationTime) are sorted
+		// according to time.end - time.start and string comparison if same time (use directly compareTo method from StationTime class)
+		PriorityQueue<StationTime> pq = new PriorityQueue<>((o1, o2) -> o1.compareTo(o2));
+
+		// it would make sense to only add all sources (i.e. a starting point can appear multiple time) to the PQ
+		// and adding the correspondence to the PQ as we encounter them in the graph exploration
+		// However arriving time and starting time of correspondence are likely to be different and then the keys (StationTime objects) will be different
+		// Therefore, we cannot make a get on the relations HashMap because we will get a null return value (key does not exist because different time)
+		// so we add all the stations at the beginning (startint point + correspondence), we ensure they are reachable in the loop below
+		for (StationTime st: relations.keySet()) {
+			pq.add(st);
+		}
+
+		// HashMap of reachable stations and time it takes to reach them
+		HashMap<String, Integer> reachables = new HashMap<>();
+
+		// trivial reachable station is the starting point
+		reachables.put(startPoint.station, startPoint.time);
+
+		// Dijkstra
+		while (!pq.isEmpty()) {
+			// get the next node (based on min cost)
+			StationTime next = pq.poll();
+			// check that this station can reach other stations
+			// and that the correspondence does not leave before our train arrives at the station
+			if (reachables.containsKey(next.station) && next.time >= reachables.get(next.station)) {
+				// check every neighbors
+				for (StationTime neighbor: relations.get(next)) {
+					// relax edges (make sure this station has already been reached in order to compare costs)
+					if (reachables.containsKey(neighbor.station) && neighbor.time < reachables.get(neighbor.station)) {
+						reachables.replace(neighbor.station, neighbor.time);
+					} else {
+						// if station never been reached before, simply add to the map of reachables
+						reachables.put(neighbor.station, neighbor.time);
+					}
+				}
+			}
+		}
+
+		return reachables;
     }
 
     public static class StationTime implements Comparable<StationTime> {

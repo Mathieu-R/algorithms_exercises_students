@@ -114,7 +114,7 @@ public class Median {
         // otherwise, we need to sort the left or right part of the vector.
 		// NOTE: we always want the mid of the whole vector (not of a slice of it)
 		// because we're looking for the median
-        int mid = vec.size() / 2;
+		int mid = vec.size() / 2;
 
         if (partitioningIndex < mid) {
             // sort right part
@@ -124,9 +124,9 @@ public class Median {
             // sort left part
             return median(vec, lo, partitioningIndex - 1);
         } else {
-            // we found the median
-            return vec.get(partitioningIndex);
-        }
+			// the median has been sorted and is at the middle of the array
+			return vec.get(partitioningIndex);
+		}
     }
 
     /**
@@ -137,31 +137,30 @@ public class Median {
      * @return the position of the partitioning item
      */
     private static int partition(Vector vec, int lo, int hi) {
-        int i = lo + 1;
-        int j = hi;
+        int i = lo;
+        int j = hi + 1;
 
         // we arbitrarily choose the first element of vec as the partitioning item
         int partitioningItem = vec.get(lo);
 
         // swap elements until i and j cross
         while (true) {
-            //
-            while (vec.get(i) < partitioningItem) {
+			// increase "i" from "lo + 1"
+			// until we find a greater number than the partitioning item
+            while (vec.get(++i) < partitioningItem) {
                 // stop if we reach the end of the list
                 if (i == hi) {
                     break;
                 }
-
-                i++;
             }
 
-            while (vec.get(j) > partitioningItem) {
+			// decrease "j" from "hi"
+			// until we find a smaller number than the partitioning item
+            while (vec.get(--j) > partitioningItem) {
                 // stop if we reach the beginning of the list
                 if (j == lo) {
                     break;
                 }
-
-                j--;
             }
 
             // if i cross j, stop the infinite loop

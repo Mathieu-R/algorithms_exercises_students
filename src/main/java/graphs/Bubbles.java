@@ -1,7 +1,7 @@
 package graphs;
 
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Sophie and Marc want to reduce the bubbles of contacts in the belgian population
@@ -25,7 +25,6 @@ import java.util.List;
  * The resulting bubbles are :
  *
  * - Alice's bubble = [Bob, Carol, Eve, Frank]
- * - Bob's bubble = [Bob, Carol, Eve, Frank]
  * - Bob's bubble = [Alice, Carol, Eve, Frank]
  * - Carole's bubble = [Alice, Bob]
  * - Frank's Bubble = [Alice, Bob, Eve]
@@ -60,8 +59,51 @@ import java.util.List;
 public class Bubbles {
 
     public static List<ForbiddenRelation> cleanBubbles(List<Contact> contacts, int n) {
-        // TODO
-         return null;
+        // create the bubble mapping <People, Bubble>
+		HashMap<String, HashSet<String>> mapping = new HashMap<>();
+
+		for (Contact contact: contacts) {
+			// add each people
+			if (!mapping.containsKey(contact.a)) {
+				mapping.put(contact.a, new HashSet<>());
+			}
+
+			if (!mapping.containsKey(contact.b)) {
+				mapping.put(contact.b, new HashSet<>());
+			}
+
+			// add their bubble
+			HashSet<String> bubbleOfA = mapping.get(contact.a);
+			bubbleOfA.add(contact.b);
+
+			HashSet<String> bubbleOfB = mapping.get(contact.b);
+			bubbleOfB.add(contact.a);
+		}
+
+		ArrayList<ForbiddenRelation> forbiddenRelations = new ArrayList<>();
+
+		HashMap<String, Integer> distTo = new HashMap<>();
+		Queue<String> queue = new ArrayDeque<>();
+
+		for (String contact: mapping.keySet()) {
+			distTo.putIfAbsent(contact, 0);
+			queue.add(contact);
+		}
+
+		while (!queue.isEmpty()) {
+			String next = queue.poll();
+
+			for (String contact: mapping.get(next)) {
+				if (distTo.get(contact) < n) {
+					distTo.replace(contact, distTo.get(contact) + 1);
+				} else {
+					forbiddenRelations.add(new ForbiddenRelation(next, contact));
+				}
+			}
+		}
+
+
+		return forbiddenRelations;
     }
 
 }

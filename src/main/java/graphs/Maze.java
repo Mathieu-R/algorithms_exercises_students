@@ -1,8 +1,8 @@
 package graphs;
 
 import java.util.ArrayDeque;
+import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Stack;
 
 /**
  * We are interested in solving a maze represented by a matrix of integers 0-1 of size nxm.
@@ -21,7 +21,7 @@ public class Maze {
     public static Iterable<Integer> shortestPath(int[][] maze, int x1, int y1, int x2, int y2) {
         // base case: if starting or ending position is a wall => return empty path
 		if (maze[x1][y1] == 1 || maze[x2][y2] == 1) {
-			return new Stack<>();
+			return new LinkedList<>();
 		}
 
 		// create a queue for the BFS
@@ -103,26 +103,30 @@ public class Maze {
 		int startIndex = ind(x1, y1, m);
 		int destIndex = ind(x2, y2, m);
 
+		// iterator on Stack is FIFO (instead of LIFO, design error...)
+		// we use LinkedList instead
+		LinkedList<Integer> path = new LinkedList<>();
+
 		// if destination has not been found => return empty path
 		if (!found) {
-			return new Stack<>();
+			return path;
 		}
 
-		Stack<Integer> path = new Stack<>();
 		// add to the path stack from dest to start
 		while(destIndex != startIndex) {
-			path.push(destIndex);
+			// add at the head
+			path.addFirst(destIndex);
 			destIndex = edgeTo[destIndex];
 		}
 
 		// add the starting point
-		path.push(startIndex);
+		path.addFirst(startIndex);
 		return path;
     }
 
 	// some helpers are given to us
-    public static int ind(int x, int y, int lg) {
-        return x * lg + y;
+    public static int ind(int x, int y, int mCols) {
+        return x * mCols + y;
     }
 
     public static int row(int pos, int mCols) {

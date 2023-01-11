@@ -20,10 +20,10 @@ public class Digraph {
     public Digraph(int V) {
 		marked = new int[V];
 
-		adj = new ArrayList<ArrayList<Integer>>(V);
+		adj = new ArrayList<>(V);
 
 		for (int v = 0; v < V; v++) {
-			adj.add(v, new ArrayList<Integer>());
+			adj.add(v, new ArrayList<>());
 		}
 
 		this.V = V;
@@ -49,7 +49,6 @@ public class Digraph {
     public void addEdge(int v, int w) {
 		adj.get(v).add(w);
 		E++;
-		V++;
     }
 
     /**

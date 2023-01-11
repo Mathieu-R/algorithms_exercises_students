@@ -50,7 +50,9 @@ public class ClosestPair {
 			}
 
 			// if the next candidate is closer to x than the current candidate
-			if (Math.abs(x - (a[lo] + a[hi])) < Math.abs(x - sum)) {
+			int nextSum = a[lo] + a[hi];
+			int currentSumCandidate = pair[0] + pair[1];
+			if (Math.abs(x - nextSum) < Math.abs(x - currentSumCandidate)) {
 				// update the pair return value
 				pair[0] = a[lo];
 				pair[1] = a[hi];
