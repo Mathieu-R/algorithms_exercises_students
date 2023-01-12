@@ -63,15 +63,25 @@ public class GlobalWarmingPaths {
 	 *         If no such path, an empty list.
 	 */
 	public List<Point> shortestPath(Point p1, Point p2) {
+		// base case: path is just one point
+		if (p1.equals(p2)) {
+			if (altitude[p1.x][p1.y] > waterLevel) {
+				LinkedList<Point> path = new LinkedList<>();
+				path.add(p1);
+				return path;
+			} else {
+				return null;
+			}
+		}
+
 		boolean[][] marked = new boolean[n][m];
-		ArrayList<Point> edgeTo = new ArrayList<>();
+		Point[][] edgeTo = new Point[n][m];
 
 		final int[][] ALLOWED_MOVES = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
 		Queue<Point> queue = new ArrayDeque<>();
 
 		marked[p1.x][p1.y] = true;
-		edgeTo.add(p1);
 		queue.add(p1);
 
 		boolean found = false;
@@ -81,14 +91,14 @@ public class GlobalWarmingPaths {
 				break;
 			}
 
-			Point nextCell = queue.poll();
+			Point currentCellPoint = queue.poll();
 
 			for (int[] move: ALLOWED_MOVES) {
 				int dx = move[0];
 				int dy = move[1];
 
-				int nextMoveX = nextCell.x + dx;
-				int nextMoveY = nextCell.y + dy;
+				int nextMoveX = currentCellPoint.x + dx;
+				int nextMoveY = currentCellPoint.y + dy;
 
 				if ((nextMoveX < 0 || nextMoveX >= n) || (nextMoveY < 0 || nextMoveY >= m)) {
 					continue;
@@ -102,7 +112,7 @@ public class GlobalWarmingPaths {
 
 				if (!marked[nextMoveX][nextMoveY]) {
 					queue.add(nextMovePoint);
-					edgeTo.add(nextMovePoint);
+					edgeTo[nextMoveX][nextMoveY] = currentCellPoint;
 					marked[nextMoveX][nextMoveY] = true;
 				}
 
@@ -118,7 +128,14 @@ public class GlobalWarmingPaths {
 			return path;
 		}
 
-		return edgeTo;
+		for (Point p = p2; !p.equals(p2); p = edgeTo[p.x][p.y]) {
+			path.add(p);
+		}
+
+		path.add(p1);
+
+		Collections.reverse(path);
+		return path;
 	}
 
 	/**
