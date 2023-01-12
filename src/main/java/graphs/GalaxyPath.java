@@ -46,7 +46,7 @@ public class GalaxyPath {
 		// keep track of time (in years) taken to go to node "i"
 		int[] distTo = new int[graph.length];
 
-		/* BFS */
+		/* BFS (because cost = 1) */
 
 		Queue<Integer> queue = new ArrayDeque<>();
 		queue.add(source);
@@ -55,23 +55,23 @@ public class GalaxyPath {
 
 		while(!queue.isEmpty()) {
 			// go from point a
-			int a = queue.poll();
+			int current = queue.poll();
 
 			// optimization: early stop if we reached the destination
-			if (destinations.contains(a)) {
-				return distTo[a];
+			if (destinations.contains(current)) {
+				return distTo[current];
 			}
 
 			// visit all other nodes (i.e. all other galaxies)
 			// (go to point b)
-			for (int b = 0; b < graph.length; b++) {
+			for (int next = 0; next < graph.length; next++) {
 				// if galaxy has not already been visited yet
 				// AND if by-pass is still open
-				if (!marked[b] && distTo[a] < graph[a][b]) {
-					marked[b] = true;
+				if (!marked[next] && distTo[current] < graph[current][next]) {
+					marked[next] = true;
+					queue.add(next);
 
-					queue.add(b);
-					distTo[b] = distTo[a] + 1;
+					distTo[next] = distTo[current] + 1;
 				}
 			}
 

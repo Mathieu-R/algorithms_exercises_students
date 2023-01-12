@@ -83,15 +83,17 @@ public class Trains {
 		// Dijkstra
 		while (!pq.isEmpty()) {
 			// get the next node (based on min cost)
-			StationTime next = pq.poll();
+			StationTime current = pq.poll();
 			// check that this station can reach other stations
 			// and that the correspondence does not leave before our train arrives at the station
-			if (reachables.containsKey(next.station) && next.time >= reachables.get(next.station)) {
+			if (reachables.containsKey(current.station) && current.time >= reachables.get(current.station)) {
 				// check every neighbors
-				for (StationTime neighbor: relations.get(next)) {
+				for (StationTime neighbor: relations.get(current)) {
 					// relax edges (make sure this station has already been reached in order to compare costs)
-					if (reachables.containsKey(neighbor.station) && neighbor.time < reachables.get(neighbor.station)) {
-						reachables.replace(neighbor.station, neighbor.time);
+					if (reachables.containsKey(neighbor.station)) {
+						if (neighbor.time < reachables.get(neighbor.station)) {
+							reachables.replace(neighbor.station, neighbor.time);
+						}
 					} else {
 						// if station never been reached before, simply add to the map of reachables
 						reachables.put(neighbor.station, neighbor.time);

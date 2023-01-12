@@ -39,7 +39,7 @@ public class Maze {
 		// useful to generate the path tree
 		int[] edgeTo = new int[n * m];
 
-		/* explore the maze with BFS */
+		/* explore the maze with BFS (because cost are 1) */
 
 		// mark the starting point
 		marked[ind(x1, y1, m)] = true;

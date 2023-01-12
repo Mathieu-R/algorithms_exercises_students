@@ -55,7 +55,7 @@ public class MineClimbing {
 
 		distTo[startX][startY] = 0;
 
-		/* BFS */
+		/* Dijkstra */
 
 		// priority queue in order to visit the shortest paths first
 		PriorityQueue<Cube> pq = new PriorityQueue<Cube>();

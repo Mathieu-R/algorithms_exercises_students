@@ -74,25 +74,36 @@ public class GlobalWarmingPaths {
 			}
 		}
 
+		// since every cost are 1 => we use a simple BFS and not Dijkstra
+
+		// keep track of visited node to avoid cycling
 		boolean[][] marked = new boolean[n][m];
+
+		// keep tree of path
 		Point[][] edgeTo = new Point[n][m];
 
+		// implicit graph
 		final int[][] ALLOWED_MOVES = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
+		// queue for BFS
 		Queue<Point> queue = new ArrayDeque<>();
 
+		// mark the starting point and add it to the queue
 		marked[p1.x][p1.y] = true;
 		queue.add(p1);
 
 		boolean found = false;
 
 		while(!queue.isEmpty()) {
+			// base case: we have reached the destination
 			if (found) {
 				break;
 			}
 
+			// dequeue the next cell
 			Point currentCellPoint = queue.poll();
 
+			// move on the implicit graph (adjacent cells)
 			for (int[] move: ALLOWED_MOVES) {
 				int dx = move[0];
 				int dy = move[1];
@@ -100,24 +111,29 @@ public class GlobalWarmingPaths {
 				int nextMoveX = currentCellPoint.x + dx;
 				int nextMoveY = currentCellPoint.y + dy;
 
+				// if we go out the map
 				if ((nextMoveX < 0 || nextMoveX >= n) || (nextMoveY < 0 || nextMoveY >= m)) {
 					continue;
 				}
 
+				// if we try to reach an unsafe area
 				if (altitude[nextMoveX][nextMoveY] <= waterLevel) {
 					continue;
 				}
 
 				Point nextMovePoint = new Point(nextMoveX, nextMoveY);
 
+				// if the neighbor cell has not been visited yet,
+				// visit it, mark it, keep edge to it in memory and add it to the queue
 				if (!marked[nextMoveX][nextMoveY]) {
-					queue.add(nextMovePoint);
-					edgeTo[nextMoveX][nextMoveY] = currentCellPoint;
 					marked[nextMoveX][nextMoveY] = true;
-				}
+					edgeTo[nextMoveX][nextMoveY] = currentCellPoint;
+					queue.add(nextMovePoint);
 
-				if (nextMovePoint.equals(p2)) {
-					found = true;
+					// is it the destination point ?
+					if (nextMovePoint.equals(p2)) {
+						found = true;
+					}
 				}
 			}
 		}
@@ -128,7 +144,7 @@ public class GlobalWarmingPaths {
 			return path;
 		}
 
-		for (Point p = p2; !p.equals(p2); p = edgeTo[p.x][p.y]) {
+		for (Point p = p2; !p.equals(p1); p = edgeTo[p.x][p.y]) {
 			path.add(p);
 		}
 
